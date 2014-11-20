@@ -74,8 +74,8 @@
 
 library(cluster)
 ## generate 25 objects, divided into 2 clusters.
-x <- rbind(cbind(rnorm(50,0,0.5), rnorm(50,0,0.5)),
-           cbind(rnorm(40,5,0.5), rnorm(40,5,0.5)))
+x <- rbind(cbind(rnorm(15,0,0.5), rnorm(15,0,0.5)),
+           cbind(rnorm(10,5,0.5), rnorm(10,5,0.5)))
 pamx <- pam(x, 2)
 str(pamx)
 plot(pamx, which=2)
@@ -87,17 +87,19 @@ cluster:::plot.partition
 pamix <- pamx
 
 
-plotDFobject <- function( frame, k ){
-   stopifnot( is.data.frame( frame ), is.integer( k ) )
+plotDFobject <- function( frame, k , m){
+   stopifnot( is.data.frame( frame ), is.numeric( k ) )
    plotPAMobject( pam( frame, k ) )
 }
+
+plotDFobject( train, 2)
 
 library(reshape2)
 library(ggplot2)
 library(gridExtra)
 library(RColorBrewer)
 
-plotPAMobject <- function( pamix ){
+plotPAMobject <- function( pamix, m = NULL ){
    stopifnot( any( class(pamix) == "partition" ) )
    frame <- as.data.frame( pamix$silinfo$widths )
    frame[4] <- row.names(frame)
@@ -106,28 +108,70 @@ plotPAMobject <- function( pamix ){
    ladne_kolory <- sample(c("#00008B", "#8B3E2F", "#8B6508", "#66CD00", "#8B0000"))
    
    for (i in 1:length(unique(frame$cluster)) ){
+      if ( i  < length(unique(frame$cluster)) ){
       assign( paste0("frame",i), frame[frame$cluster==i,])
     
       assign( paste0("wykres",i), ggplot( get(paste0("frame",i)), aes( y = sil_width, x = observation ) )+
-         geom_bar(stat="identity", colour="black", fill= ladne_kolory[2]) +
+         geom_bar(stat="identity", colour="black", fill= ladne_kolory[i]) +
          coord_flip() +
          scale_x_discrete(limits= get(paste0("frame",i))$observation[order(get(paste0("frame",i))$sil_width)])+
-         theme( axis.text.x = element_text(family = "mono", size = 15),
+         theme( panel.background=element_rect(fill='white'),
+                axis.text.x = element_blank(),
                 axis.text.y = element_text(family = "mono", size = 15),
-                axis.title.x= element_text(family = "mono", size = 20),
+                axis.title.x= element_blank(),
                 axis.title.y= element_text(family = "mono", size = 20),
                 title =element_text(family = "mono", size = 25)
          )+
          labs(x = "obserwacje", y="miara silhouette")+
-         scale_colour_brewer(palette="Set1")   )
+         scale_colour_brewer(palette="Set1")+  
+            geom_hline(aes(yintercept=0.25),linetype=2,col='white',size=1,alpha=0.4)+
+            geom_hline(aes(yintercept=0.75),linetype=2,col='white',size=1,alpha=0.4)+
+            geom_hline(aes(yintercept=0.50),linetype=2,col='white',size=1,alpha=0.4)+
+            geom_hline(aes(yintercept=1.00),linetype=2,col='black',size=1,alpha=0.4)+
+            annotate("text", x = 1:2, y = 0.35:0.35, label = c(paste0("œrednio: ", format(pamix$silinfo$clus.avg.widths[i], digits =2) ), 
+                                                              paste0("licznosc: ", pamix$clusinfo[i,1] )) ) )   
+         
+         
+         
+         
+      
+      }else{
+         assign( paste0("frame",i), frame[frame$cluster==i,])
+         
+         assign( paste0("wykres",i), ggplot( get(paste0("frame",i)), aes( y = sil_width, x = observation ) )+
+                    geom_bar(stat="identity", colour="black", fill= ladne_kolory[i]) +
+                    coord_flip() +
+                    scale_x_discrete(limits= get(paste0("frame",i))$observation[order(get(paste0("frame",i))$sil_width)])+
+                    theme( panel.background=element_rect(fill='white'),
+                           axis.text.x = element_text(family = "mono", size = 15), 
+                           axis.text.y = element_text(family = "mono", size = 15),
+                           axis.title.x= element_text(family = "mono", size = 20),
+                           axis.title.y= element_text(family = "mono", size = 20),
+                           title =element_text(family = "mono", size = 25)
+                    )+
+                    labs(x = "obserwacje", y="miara silhouette")+
+                    scale_colour_brewer(palette="Set1") +  
+                    geom_hline(aes(yintercept=0.25),linetype=2,col='white',size=1,alpha=0.4)+
+                    geom_hline(aes(yintercept=0.75),linetype=2,col='white',size=1,alpha=0.4)+
+                    geom_hline(aes(yintercept=0.50),linetype=2,col='white',size=1,alpha=0.4)+
+                    geom_hline(aes(yintercept=1.00),linetype=2,col='black',size=1,alpha=0.4)+
+                    annotate("text", x = 1:2, y = 0.35:0.35, label = c(paste0("œrednio: ", format(pamix$silinfo$clus.avg.widths[i], digits =2) ), 
+                                                                       paste0("licznosc: ", pamix$clusinfo[i,1] )) ) )  
+                    #scale_x_continuous(labels = percent)   ) 
+      }
       
    }
    
    grid.newpage() 
    
    for (i in 1:length(unique(frame$cluster)) ){
-   print(get(paste0("wykres",i)), vp=viewport(x=0.75, y = i/length(unique(frame$cluster)), 
-                           width=0.5, height=1/length(unique(frame$cluster))))
+   print(get(paste0("wykres",i)), vp=viewport(x=0.75, y = 1-i/length(unique(frame$cluster))+0.25, 
+                           width=0.5, height=1/length(unique(frame$cluster))+0.03 ))
    }
+   if( !is.null(m) ){
+      print(m, vp=viewport( x= 0.25, y = 0.5, width = 0.5, height = 1))
+   }
+   
 }
 
+plotPAMobject(pamix, m)

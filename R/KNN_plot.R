@@ -77,7 +77,8 @@ rysowanie <- function(dane){
 
 train=A[,2:3]
 
-wykres(train,A$popn,train,A$popn,k=1:16)
+m <- wykres(train,A$popn,train,A$popn,k=1:16)
+
 
 Knn1 = knn(train,train,cl=A$popn,k=3,prob=FALSE)
 c=1
