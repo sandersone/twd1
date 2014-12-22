@@ -1,7 +1,7 @@
 Classifiers
 ===========
 Authors
-> Marcin Kosiñski m.p.kosinski@gmail.com
+> Marcin KosiÃ±ski m.p.kosinski@gmail.com
 
 > Emma Sanderson
 
@@ -21,7 +21,7 @@ Make sure you have [rtools](http://cran.r-project.org/bin/windows/Rtools/) insta
 The list of available functions:
 ```{Ruby}
 help(package="classTools")
-?chooseCliassifier
+?chooseClassifier
 ```
 
 Follow this example:
