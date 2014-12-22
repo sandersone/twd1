@@ -1,0 +1,29 @@
+Package: classTools
+Version: 1.0
+Type: Package
+Title: Choose The Best Classifier
+Authors@R: c(
+    person("Marcin", "Kosinski", role = c("aut", "cre"),
+    email = "m.p.kosinski@gmail.com"),
+    person("Emma", "Sanderson", role = c("aut"),
+    email = "mail@mail")
+    )
+Description: TODO
+Repository: CRAN
+License: GPL-2
+LazyLoad: yes
+LazyData: yes
+Depends:
+    R (>= 3.0.0),
+    cluster,
+    ggplot2,
+    class,
+    scales,
+    Cairo,
+    grid,
+    assertthat,
+    ROCR,
+    MASS,
+    e1071
+Roxygen: list(wrap = TRUE)
+BugReports: https://github.com/sandersone/twd1/issues
