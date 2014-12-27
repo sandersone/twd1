@@ -6,31 +6,25 @@
 chooseClassifier(formula, train, test)
 }
 \arguments{
-  \item{formula}{\code{formula}}
+  \item{formula}{A \code{formula} for classifiers to
+  compute.}
 
-  \item{train}{\code{data.frame}}
+  \item{train}{A \code{data.frame} denoting the training
+  set.}
 
-  \item{train}{\code{data.frame}}
+  \item{test}{A \code{data.frame} denoting the test set.}
 }
 \description{
 For an object of class \code{formula} and a data set the
 \code{chooseClassifier} computes a \link{ggplot} showing
-the Area Under Curve (result of \link[performance]{ROCR})
-for classification algorithms like \link{naiveBayes},
-\link{lda}, logistic regression \link{glm} with
-\code{logit} link function. Any classifier can be added if
-needed. Contact:
+the Area Under the Curve (result of
+\link[ROCR]{performance}) for classification algorithms
+like \link{naiveBayes}, \link{lda}, logistic regression
+\link{glm} with \code{logit} or \code{probit} link
+function. Any classifier can be added if needed. Contact:
 \href{https://github.com/sandersone/twd1/issues}{https://github.com/sandersone/twd1/issues}.
 }
-\details{
-TO DO
-}
 \note{
-For k-nearest neighbourhood alghoritm, the model with the
-highest Area Under Curve is shown for \code{k} from 2 to 6.
-So far it is commented because I have problems with that
-function.
-
 For naive Bayes a parameter \code{laplace} is set to 0.2.
 }
 \examples{
