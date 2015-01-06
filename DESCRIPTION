@@ -24,6 +24,8 @@ Depends:
     assertthat,
     ROCR,
     MASS,
-    e1071
+    e1071,
+    rpart,
+    adabag
 Roxygen: list(wrap = TRUE)
 BugReports: https://github.com/sandersone/twd1/issues
