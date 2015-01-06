@@ -1,9 +1,9 @@
 Classifiers
 ===========
 Authors
-> Marcin Kosiñski m.p.kosinski@gmail.com
+> Marcin Kosiński m.p.kosinski@gmail.com
 
-> Emma Sanderson
+> Emma Sanderson emmasanderson.pl@gmail.com
 
 
 Downloading `classTools` package:
