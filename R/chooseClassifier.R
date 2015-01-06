@@ -5,6 +5,7 @@
 #' @description
 #' 
 #' For an object of class \code{formula} and a data set the 
+#'
 #' \code{chooseClassifier} computes a \link{ggplot} showing
 #' the Area Under the Curve (result of \link[ROCR]{performance}) for
 #' classification algorithms like \link{naiveBayes}, \link{lda}, 
@@ -20,6 +21,10 @@
 #' @param formula A \code{formula} for classifiers to compute.
 #' @param train A \code{data.frame} denoting the training set.
 #' @param test A \code{data.frame} denoting the test set.
+#' @param choice A \code{vecoter} of length 8 specifying which classifiers 
+#' should be compared. The order is as follows: Naive Bayes, LDA, Logit, Probit,
+#' SVM, Classification Tree, Boosting, Bagging. The default is \code{c(1,1,1,0,0,0,0,0)}
+#' which corresponds to Naive Bayes, LDA and Logit classifiers.
 #' 
 #'
 #'
