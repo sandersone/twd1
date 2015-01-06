@@ -59,7 +59,7 @@ chooseClassifier <- function( formula, train, test, choice = c(1,1,1,0,0,0,0,0) 
    bayes_prawd <- predict( bayes, newdata = test, type="raw")[,2]
 
    auc_prec <- rbind(auc_prec, data.frame(AUC=auc( bayes_prawd, test[, as.character( formula )[2]] ),
-                           PREC=sum(diag(table(bayes_pred,test$class)))/sum((table(bayes_pred,test$class))),
+                           PREC=sum(diag(table(bayes_pred,test[, as.character( formula )[2]])))/sum((table(bayes_pred,test[, as.character( formula )[2]]))),
                           CLASSIFIER="Naive Bayes"))
    }
    
@@ -71,7 +71,7 @@ chooseClassifier <- function( formula, train, test, choice = c(1,1,1,0,0,0,0,0) 
    pred_praw <- predict( mod_lda, newdata = test )$posterior[,2]
 
    auc_prec <- rbind(auc_prec,data.frame(AUC=auc( pred_praw, test[, as.character( formula )[2]] ),
-                                 PREC=sum(diag(table(pred_klas,test$class)))/sum((table(pred_klas,test$class))),
+                                 PREC=sum(diag(table(pred_klas,test[, as.character( formula )[2]])))/sum((table(pred_klas,test[, as.character( formula )[2]]))),
                                  CLASSIFIER="LDA"))
    }
    
@@ -82,7 +82,7 @@ chooseClassifier <- function( formula, train, test, choice = c(1,1,1,0,0,0,0,0) 
    Pred  <-  ifelse( P >0.5, 1, 0 )
 
    auc_prec <- rbind(auc_prec,data.frame(AUC= auc( P, test[, as.character( formula )[2]] ),
-                  PREC=sum(diag(table(Pred,test$class)))/sum((table(Pred,test$class))),
+                  PREC=sum(diag(table(Pred,test[, as.character( formula )[2]])))/sum((table(Pred,test[, as.character( formula )[2]]))),
                   CLASSIFIER="Logit"))
    }
    
@@ -93,7 +93,7 @@ chooseClassifier <- function( formula, train, test, choice = c(1,1,1,0,0,0,0,0) 
    Pred  <-  ifelse( P >0.5, 1, 0 )
 
    auc_prec <- rbind(auc_prec,data.frame(AUC= auc( P, test[, as.character( formula )[2]] ),
-                                PREC=sum(diag(table(Pred,test$class)))/sum((table(Pred,test$class))),
+                                PREC=sum(diag(table(Pred,test[, as.character( formula )[2]])))/sum((table(Pred,test[, as.character( formula )[2]]))),
                                 CLASSIFIER="Probit"))
    }
    
@@ -104,7 +104,7 @@ chooseClassifier <- function( formula, train, test, choice = c(1,1,1,0,0,0,0,0) 
    
 
    auc_prec <- rbind(auc_prec,data.frame(AUC= auc( as.numeric(SVM_pred)-1, test[, as.character( formula )[2]] ),
-                                      PREC=sum(diag(table(SVM_pred,test$class)))/sum((table(SVM_pred,test$class))),
+                                      PREC=sum(diag(table(SVM_pred,test[, as.character( formula )[2]])))/sum((table(SVM_pred,test[, as.character( formula )[2]]))),
                                       CLASSIFIER="SVM"))
    }
 
@@ -116,7 +116,7 @@ chooseClassifier <- function( formula, train, test, choice = c(1,1,1,0,0,0,0,0) 
    P <- ifelse(drzewo_pred>0.5,1,0)
 
    auc_prec <- rbind(auc_prec,data.frame(AUC= auc( drzewo_pred, test[, as.character( formula )[2]] ),
-                                      PREC=sum(diag(table(P,test$class)))/sum((table(P,test$class))),
+                                      PREC=sum(diag(table(P,test[, as.character( formula )[2]])))/sum((table(P,test[, as.character( formula )[2]]))),
                                       CLASSIFIER="Tree"))
 
    }
@@ -129,7 +129,7 @@ chooseClassifier <- function( formula, train, test, choice = c(1,1,1,0,0,0,0,0) 
    P <- ifelse(boost_pred>0.5,1,0)
 
    auc_prec <- rbind(auc_prec,data.frame(AUC= auc(boost_pred, test[, as.character( formula )[2]] ),
-                                      PREC=sum(diag(table(P,test$class)))/sum((table(P,test$class))),
+                                      PREC=sum(diag(table(P,test[, as.character( formula )[2]])))/sum((table(P,test[, as.character( formula )[2]]))),
                                       CLASSIFIER="Boost"))
    }
       
@@ -141,7 +141,7 @@ chooseClassifier <- function( formula, train, test, choice = c(1,1,1,0,0,0,0,0) 
    P <- ifelse(bag_pred>0.5,1,0)
    
    auc_prec <- rbind(auc_prec,data.frame(AUC= auc(bag_pred, test[, as.character( formula )[2]] ),
-                                         PREC=sum(diag(table(P,test$class)))/sum((table(P,test$class))),
+                                         PREC=sum(diag(table(P,test[, as.character( formula )[2]])))/sum((table(P,test[, as.character( formula )[2]]))),
                                          CLASSIFIER="Bag"))
 
    }
