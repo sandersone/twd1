@@ -44,101 +44,108 @@
 chooseClassifier <- function( formula, train, test, choice = c(1,1,1,0,0,0,0,0) ){
    assert_that( is.data.frame( train ), is.data.frame( test ),length(choice)==8 )
    formula <- as.formula( formula )
-#   auces <- list() 
-#  preces <- list()
-
-#    choosing best k for knn
-#    knn_auc <- sapply( 2:6, function( x ){
-#       auc( attr( knn( cl = train[, as.character( formula )[2]], 
-#                       train = train, test = test, k = x ), "prob" ),
-#            test[, as.character( formula )[2]] )
-#    })
-#    auces$k_knn_auc <- which( knn_auc == max( knn_auc ) )
    
+   # begin auc_prec data.frame
+   
+   auc_prec <- data.frame(AUC=0,
+                          PREC=0,
+                          CLASSIFIER="Dummy")
+   choice <- as.logical(choice)
+
    # bayes
+   if(choice[1]){
    bayes <- naiveBayes( formula , data = train, laplace = 0.2)
    bayes_pred <- predict( bayes, newdata = test )
    bayes_prawd <- predict( bayes, newdata = test, type="raw")[,2]
-   
-#   auces$bayes_auc <- auc( bayes_prawd, test[, as.character( formula )[2]] )
-#   preces$bayes_prec <- sum(diag(table(bayes_pred,test$class)))/sum((table(bayes_pred,test$class)))
 
-   auc_prec <- data.frame(AUC=auc( bayes_prawd, test[, as.character( formula )[2]] ),
+   auc_prec <- rbind(auc_prec, data.frame(AUC=auc( bayes_prawd, test[, as.character( formula )[2]] ),
                            PREC=sum(diag(table(bayes_pred,test$class)))/sum((table(bayes_pred,test$class))),
-                          CLASSIFIER="Naive Bayes")
+                          CLASSIFIER="Naive Bayes"))
+   }
    
    # lda
+   if(choice[2]){
    mod_lda <- lda( formula, data = train )
       
    pred_klas <- predict( mod_lda, newdata = test )$class
    pred_praw <- predict( mod_lda, newdata = test )$posterior[,2]
-   
-#   auces$lda_auc <- auc( pred_praw, test[, as.character( formula )[2]] )
-#   preces$lda_prec <- sum(diag(table(pred_klas,test$class)))/sum((table(pred_klas,test$class)))
-   
+
    auc_prec <- rbind(auc_prec,data.frame(AUC=auc( pred_praw, test[, as.character( formula )[2]] ),
                                  PREC=sum(diag(table(pred_klas,test$class)))/sum((table(pred_klas,test$class))),
                                  CLASSIFIER="LDA"))
-
+   }
+   
    # logit
+   if(choice[3]){
    logit  <-  glm( formula, data = train, family=binomial(link = "logit"))
    P <- predict( logit, newdata = test, type="response")
    Pred  <-  ifelse( P >0.5, 1, 0 )
-#   auces$logit_auc <- auc( Pred, test[, as.character( formula )[2]] )
-#   preces$logit_prec <- sum(diag(table(P,test$class)))/sum((table(P,test$class)))
 
-   auc_prec <- rbind(auc_prec,data.frame(AUC= auc( Pred, test[, as.character( formula )[2]] ),
-                  PREC=sum(diag(table(Pred,test$class)))/sum((table(P,test$class))),
+   auc_prec <- rbind(auc_prec,data.frame(AUC= auc( P, test[, as.character( formula )[2]] ),
+                  PREC=sum(diag(table(Pred,test$class)))/sum((table(Pred,test$class))),
                   CLASSIFIER="Logit"))
-
+   }
+   
    # probit
+   if(choice[4]){
    probit  <-  glm( formula, data = train, family=binomial(link = "probit"))
    P <- predict( probit, newdata = test, type="response")
    Pred  <-  ifelse( P >0.5, 1, 0 )
-#   auces$probit_auc <- auc( Pred, test[, as.character( formula )[2]] )
-#   preces$probit_prec <- sum(diag(table(Pred,test$class)))/sum((table(Pred,test$class)))
-   
-   auc_prec <- rbind(auc_prec,data.frame(AUC= auc( Pred, test[, as.character( formula )[2]] ),
+
+   auc_prec <- rbind(auc_prec,data.frame(AUC= auc( P, test[, as.character( formula )[2]] ),
                                 PREC=sum(diag(table(Pred,test$class)))/sum((table(Pred,test$class))),
                                 CLASSIFIER="Probit"))
-
+   }
+   
    #svm
+   if(choice[5]){
    SVM <- svm(formula, train,type='C',kernel='linear')
-   SVM_pred <- predict(SVM,test)
+   SVM_pred <- predict(SVM,test,type="posterior")
+   
 
    auc_prec <- rbind(auc_prec,data.frame(AUC= auc( as.numeric(SVM_pred)-1, test[, as.character( formula )[2]] ),
                                       PREC=sum(diag(table(SVM_pred,test$class)))/sum((table(SVM_pred,test$class))),
                                       CLASSIFIER="SVM"))
+   }
 
-   # drzewo (trzeba do depedencies dopisać library(rpart) )
+   # drzewo 
+   if(choice[6]){
 
    drzewo <- rpart(formula,data=train)
-   drzewo_pred <- predict(drzewo,newdata=test,type="class")
+   drzewo_pred <- predict(drzewo,newdata=test)[,2]
+   P <- ifelse(drzewo_pred>0.5,1,0)
 
-   auc_prec <- rbind(auc_prec,data.frame(AUC= auc( as.numeric(drzewo_pred)-1, test[, as.character( formula )[2]] ),
-                                      PREC=sum(diag(table(drzewo_pred,test$class)))/sum((table(drzewo_pred,test$class))),
+   auc_prec <- rbind(auc_prec,data.frame(AUC= auc( drzewo_pred, test[, as.character( formula )[2]] ),
+                                      PREC=sum(diag(table(P,test$class)))/sum((table(P,test$class))),
                                       CLASSIFIER="Tree"))
 
-   # boosting (trzeba dopisać adabag)
+   }
    
+   # boosting 
+   
+   if(choice[7]){
    boost <- boosting(formula, data = train)
-   boost_pred <- predict(boost,test)$class
+   boost_pred <- predict(boost,test)$prob[,2]
+   P <- ifelse(boost_pred>0.5,1,0)
 
-   auc_prec <- rbind(auc_prec,data.frame(AUC= auc( as.numeric(boost_pred)-1, test[, as.character( formula )[2]] ),
-                                      PREC=sum(diag(table(boost_pred,test$class)))/sum((table(boost_pred,test$class))),
+   auc_prec <- rbind(auc_prec,data.frame(AUC= auc(boost_pred, test[, as.character( formula )[2]] ),
+                                      PREC=sum(diag(table(P,test$class)))/sum((table(P,test$class))),
                                       CLASSIFIER="Boost"))
-
-   # bagging (trzeba dopisać adabag)
-
-   bag <- bagging(formula, data = train)
-   bag_pred <- predict(bag,test)$class
+   }
+      
+   # bagging
    
-   auc_prec <- rbind(auc_prec,data.frame(AUC= auc( as.numeric(bag_pred)-1, test[, as.character( formula )[2]] ),
-                                         PREC=sum(diag(table(bag_pred,test$class)))/sum((table(bag_pred,test$class))),
+   if(choice[8]){
+   bag <- bagging(formula, data = train)
+   bag_pred <- predict(bag,test)$prob[,2]
+   P <- ifelse(bag_pred>0.5,1,0)
+   
+   auc_prec <- rbind(auc_prec,data.frame(AUC= auc(bag_pred, test[, as.character( formula )[2]] ),
+                                         PREC=sum(diag(table(P,test$class)))/sum((table(P,test$class))),
                                          CLASSIFIER="Bag"))
 
-
-   auc_prec <- auc_prec[as.logical(choice),]
+   }
+   auc_prec <- auc_prec[-1,]
 
    plotClassifiers( data.frame(auc_prec) )
 
@@ -152,18 +159,8 @@ auc <- function(predicted_probability, real_classes){
 }
 
 
-plotClassifiers <- function( list ){
-   print(list)
-   #assert_that( is.list( list ) )
-   #n <- length(list)
-   #list <- auc_prec
-   n <- nrow(list)
-   
-   #aucesX <- as.data.frame(t(as.data.frame(list)))
-   aucesX <- list
-#   aucesX[, 2] <- rownames(aucesX)
-#    auces[, 3] <- rep(1, n)
-#    names(auces) <- c("auc", "algorithm", "fake")
+plotClassifiers <- function( aucesX ){
+
    names(aucesX) <- c("auc", "prec","algorithm")
    ggplot(aucesX, aes(x= factor(algorithm), y=auc, fill= auc))+ 
       geom_bar(stat = "identity")+
