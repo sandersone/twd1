@@ -6,7 +6,7 @@ Authors@R: c(
     person("Marcin", "Kosinski", role = c("aut", "cre"),
     email = "m.p.kosinski@gmail.com"),
     person("Emma", "Sanderson", role = c("aut"),
-    email = "mail@mail")
+    email = "emmasanderson.pl@gmail.com")
     )
 Description: TODO
 Repository: CRAN
