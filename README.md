@@ -37,3 +37,12 @@ chooseClassifier( class~., train, test, rep(1,8) )
 ```
 
 ![Example 1](https://raw.githubusercontent.com/sandersone/twd1/master/Rplot.jpeg)
+
+
+We can specify which classifier should be calculated and printed.
+
+```{Ruby}
+chooseClassifier( class~., train, test, c(1,0,1,0,1,0,1,0) )
+```
+
+![Example 2](https://raw.githubusercontent.com/sandersone/twd1/master/Rplot01.jpeg)

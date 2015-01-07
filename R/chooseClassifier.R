@@ -16,6 +16,7 @@
 #' @note
 #' 
 #' For naive Bayes a parameter \code{laplace} is set to 0.2.
+#' For SVM parameters are \code{type='C'} and \code{kernel="radial"}.
 #' 
 #'
 #' @param formula A \code{formula} for classifiers to compute.
@@ -37,6 +38,9 @@
 #' train <- se_wyb[ index, ] 
 #' test <- se_wyb[ -index, ]
 #' chooseClassifier( class~., train, test, rep(1,8) )
+#' 
+#' 
+#' chooseClassifier( class~., train, test, c(1,0,1,0,1,0,1,0) )
 #' 
 #' @family classTools
 #' @rdname chooseClassifier
@@ -99,12 +103,18 @@ chooseClassifier <- function( formula, train, test, choice=c(1,1,1,0,0,0,0,0)){
    
    #svm
    if(choice[5]){
-   SVM <- svm(formula, train,type='C',kernel='linear')
-   SVM_pred <- predict(SVM,test,type="posterior")
+
+   
+   SVM <- svm(formula, train,type='C',kernel="radial", 
+          probability=TRUE)
+    
+   pred1 <- predict(SVM, test, probability=TRUE)
+   SVM_pred <- attr(pred1,"probabilities")[,2]
+   SVM_class <- ifelse( SVM_pred >0.5, 1, 0 )
    
 
-   auc_prec <- rbind(auc_prec,data.frame(AUC= auc( as.numeric(SVM_pred)-1, test[, as.character( formula )[2]] ),
-                                      PREC=sum(diag(table(SVM_pred,test[, as.character( formula )[2]])))/sum((table(SVM_pred,test[, as.character( formula )[2]]))),
+   auc_prec <- rbind(auc_prec,data.frame(AUC= auc( SVM_pred, test[, as.character( formula )[2]] ),
+                                      PREC=sum(diag(table(SVM_class,test[, as.character( formula )[2]])))/sum((table(SVM_class,test[, as.character( formula )[2]]))),
                                       CLASSIFIER="SVM"))
    }
 
