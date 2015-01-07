@@ -1,6 +1,6 @@
-- ogarnąć jak dostać p-stwa z SVM żeby AUC wychodził dobry
-- ze trzy przykładowe zbiory danych + różne opcje wybierania klasyfikatorów, złożone np w ten 'redme' na gicie, albo coś innego
-co można pokazać sali
-- ostateczne dopracowanie kodu, nie ma tego dużo 
-- ogrnięcie rozmiaru czcionki przy punktach
-- wybranie jaśniejszego i ciemniejszego fioletowego na krańce przedziałów, żeby różnica kolorów była większa
+﻿- ogarnąć jak dostać p-stwa z SVM żeby AUC wychodził dobry [Marcin]
+- ze trzy przykładowe zbiory danych + różne opcje wybierania klasyfikatorów, złożone np w ten 'readme' na gicie, albo coś innego
+co można pokazać sali [Marcin]. Ważne żeby w tej prezentacji były różne przykłądy wykresów i żey nic nie trzeba było odpalać na sali!
+- ostateczne dopracowanie kodu, nie ma tego dużo [DONE]
+- ogrnięcie rozmiaru czcionki przy punktach [DONE]
+- wybranie jaśniejszego i ciemniejszego fioletowego na krańce przedziałów, żeby różnica kolorów była większa [DONE]

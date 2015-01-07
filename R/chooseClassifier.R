@@ -41,7 +41,7 @@
 #' @family classTools
 #' @rdname chooseClassifier
 #' @export
-chooseClassifier <- function( formula, train, test, choice = c(1,1,1,0,0,0,0,0) ){
+chooseClassifier <- function( formula, train, test, choice=c(1,1,1,0,0,0,0,0)){
    assert_that( is.data.frame( train ), is.data.frame( test ),length(choice)==8 )
    formula <- as.formula( formula )
    
@@ -146,9 +146,7 @@ chooseClassifier <- function( formula, train, test, choice = c(1,1,1,0,0,0,0,0) 
 
    }
    auc_prec <- auc_prec[-1,]
-
-   plotClassifiers( data.frame(auc_prec) )
-
+   plotClassifiers(data.frame(auc_prec))
 }
 
 
@@ -160,22 +158,24 @@ auc <- function(predicted_probability, real_classes){
 
 
 plotClassifiers <- function( aucesX ){
-
+ # auc_prec -> aucesX
    names(aucesX) <- c("auc", "prec","algorithm")
-   ggplot(aucesX, aes(x= factor(algorithm), y=auc, fill= auc))+ 
+   
+   ggplot(aucesX, aes(x= algorithm, y=auc, fill= auc))+ 
       geom_bar(stat = "identity")+
-      geom_point(aes(x=factor(algorithm),y=prec))+
-      geom_text(aes(x=factor(algorithm),y=prec,label=paste0(round(prec,3)*100,"%"),size=prec),vjust=1.8)+
-   # tu trzeba zrobić coś, żeby ten najmniejszy napis nie był taki maleńki...
-         scale_fill_gradient(low="#BA55D3", high="#8968CD")+
+      geom_point(aes(x=algorithm,y=prec))+
+      geom_text(aes(x=algorithm,y=prec,label=paste0(round(prec,3)*100,"%"),size=prec),vjust=1.8)+
+      scale_size(range=c(4,7))+
+      scale_fill_gradient(low="plum1", high="orchid4")+
       xlab("Algorithms")+
       ylab("Area Under the Curve / Precision")+
-   theme( axis.text.x = element_text(family = "mono", size=15),
+   
+      theme( axis.text.x = element_text(family = "mono", size=15),
           axis.title.x= element_text(family = "mono", size=15),
           axis.title.y= element_text(family = "mono", size=15),
+          panel.grid.major.x = element_blank(), 
           title =element_text(family = "mono", size = 18)#, legend.position = "top"
-   ) +ggtitle("Comparison of chosen \n classification algorithms")+
-   scale_x_discrete(labels=aucesX[,3])
+          ) +ggtitle("Comparison of chosen \n classification algorithms")
    
 
 }
