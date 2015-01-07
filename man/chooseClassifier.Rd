@@ -50,9 +50,10 @@ train <- se_wyb[ index, ]
 test <- se_wyb[ -index, ]
 chooseClassifier( class~., train, test, rep(1,8) )
 
-
+###################
 chooseClassifier( class~., train, test, c(1,0,1,0,1,0,1,0) )
 
+################
 lo <- read.table("http://www.ipipan.eu/~teisseyrep/TEACHING/DM/DANE/brach3-5klas.txt",
 header=TRUE)
 lo[, 7] <- ifelse(lo[, 7] \%in\% c(1,2),1,0 )
@@ -62,5 +63,19 @@ test <- lo[-index,]
 lo[, 7] <- as.integer(lo[, 7])
 
 chooseClassifier( LOC~., train, test, c(1,0,1,0,0,0,0,0) )
+
+
+###############
+fit <- read.table("http://www.ipipan.eu/~teisseyrep/TEACHING/DM/DANE/fitness.txt",
+header = TRUE)
+
+fit[, 8] <- sample(0:1, size = nrow(fit), replace=TRUE)
+names(fit)[8] <- "group"
+index <- sample(1:nrow(fit), size=1/2*nrow(fit))
+train <- fit[index,]
+test <- fit[-index,]
+
+chooseClassifier( group~., train, test,
+                  sample(0:1, size = 8, replace=TRUE) )
 }
 

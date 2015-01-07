@@ -55,3 +55,26 @@ chooseClassifier( LOC~., train, test, c(1,0,1,0,0,0,0,0) )
 ```
 
 ![Example 2](https://raw.githubusercontent.com/sandersone/twd1/master/Rplot01.jpeg)
+
+
+<h5> A one bad classifier group! </h5>
+
+```{Ruby}
+fit <- read.table("http://www.ipipan.eu/~teisseyrep/TEACHING/DM/DANE/fitness.txt",
+                  header = TRUE)
+
+fit[, 8] <- sample(0:1, size = nrow(fit), replace=TRUE)
+names(fit)[8] <- "group"
+index <- sample(1:nrow(fit), size=1/2*nrow(fit))
+train <- fit[index,]
+test <- fit[-index,]
+
+chooseClassifier( group~., train, test, 
+                  sample(0:1, size = 8, replace=TRUE) )
+
+
+```
+
+
+
+![Example 2](https://raw.githubusercontent.com/sandersone/twd1/master/Rplot02.jpeg)
