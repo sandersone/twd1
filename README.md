@@ -42,7 +42,16 @@ chooseClassifier( class~., train, test, rep(1,8) )
 We can specify which classifier should be calculated and printed.
 
 ```{Ruby}
-chooseClassifier( class~., train, test, c(1,0,1,0,0,0,0,0) )
+lo <- read.table("http://www.ipipan.eu/~teisseyrep/TEACHING/DM/DANE/brach3-5klas.txt",
+                 header=TRUE)
+lo[, 7] <- ifelse(lo[, 7] %in% c(1,2),1,0 )
+index <- sample(1:nrow(lo), size=1/2*nrow(lo))
+train <- lo[index,]
+test <- lo[-index,]
+lo[, 7] <- as.integer(lo[, 7])
+
+chooseClassifier( LOC~., train, test, c(1,0,1,0,0,0,0,0) )
+
 ```
 
 ![Example 2](https://raw.githubusercontent.com/sandersone/twd1/master/Rplot01.jpeg)

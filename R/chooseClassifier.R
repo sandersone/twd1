@@ -42,6 +42,19 @@
 #' 
 #' chooseClassifier( class~., train, test, c(1,0,1,0,1,0,1,0) )
 #' 
+#' lo <- read.table("http://www.ipipan.eu/~teisseyrep/TEACHING/DM/DANE/brach3-5klas.txt",
+#' header=TRUE)
+#' lo[, 7] <- ifelse(lo[, 7] %in% c(1,2),1,0 )
+#' index <- sample(1:nrow(lo), size=1/2*nrow(lo))
+#' train <- lo[index,]
+#' test <- lo[-index,]
+#' lo[, 7] <- as.integer(lo[, 7])
+#' 
+#' chooseClassifier( LOC~., train, test, c(1,0,1,0,0,0,0,0) )
+#'
+#' 
+#' 
+#' 
 #' @family classTools
 #' @rdname chooseClassifier
 #' @export
@@ -59,9 +72,10 @@ chooseClassifier <- function( formula, train, test, choice=c(1,1,1,0,0,0,0,0)){
    # bayes
    if(choice[1]){
    bayes <- naiveBayes( formula , data = train, laplace = 0.2)
-   bayes_pred <- predict( bayes, newdata = test )
+   
    bayes_prawd <- predict( bayes, newdata = test, type="raw")[,2]
-
+   bayes_pred <- ifelse( bayes_prawd > 0.5,1,0 )
+   
    auc_prec <- rbind(auc_prec, data.frame(AUC=auc( bayes_prawd, test[, as.character( formula )[2]] ),
                            PREC=sum(diag(table(bayes_pred,test[, as.character( formula )[2]])))/sum((table(bayes_pred,test[, as.character( formula )[2]]))),
                           CLASSIFIER="Naive Bayes"))
@@ -188,9 +202,9 @@ plotClassifiers <- function( aucesX, line ){
           axis.title.y= element_text(family = "mono", size=15),
           panel.grid.major.x = element_blank(), 
           title =element_text(family = "mono", size = 18)#, legend.position = "top"
-          ) +ggtitle("Comparison of chosen \n classification algorithms")+
-      geom_hline(yintercept=line)+
-      annotate("text", x = 0.6, y =line-0.02 , label = "proportion of the \n most numerous \n class", size=3)
+   ) +ggtitle("Comparison of chosen \n classification algorithms") #+
+#       geom_hline(yintercept=line)+
+#       annotate("text", x = 0.6, y =line-0.02 , label = "proportion of the \n most numerous \n class", size=3)
    
 
 }
