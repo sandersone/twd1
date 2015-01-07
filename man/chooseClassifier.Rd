@@ -14,19 +14,31 @@ chooseClassifier(formula, train, test, choice = c(1, 1, 1, 0, 0, 0, 0, 0))
   set.}
 
   \item{test}{A \code{data.frame} denoting the test set.}
+
+  \item{choice}{A \code{vecoter} of length 8 specifying
+  which classifiers should be compared. The order is as
+  follows: Naive Bayes, LDA, Logit, Probit, SVM,
+  Classification Tree, Boosting, Bagging. The default is
+  \code{c(1,1,1,0,0,0,0,0)} which corresponds to Naive
+  Bayes, LDA and Logit classifiers.}
 }
 \description{
 For an object of class \code{formula} and a data set the
+
 \code{chooseClassifier} computes a \link{ggplot} showing
 the Area Under the Curve (result of
 \link[ROCR]{performance}) for classification algorithms
 like \link{naiveBayes}, \link{lda}, logistic regression
 \link{glm} with \code{logit} or \code{probit} link
-function. Any classifier can be added if needed. Contact:
+function. Also there is shown precision for every
+classifier on a \code{ggplot}. Any classifier can be added
+if needed. Contact:
 \href{https://github.com/sandersone/twd1/issues}{https://github.com/sandersone/twd1/issues}.
 }
 \note{
 For naive Bayes a parameter \code{laplace} is set to 0.2.
+For SVM parameters are \code{type='C'} and
+\code{kernel="radial"}.
 }
 \examples{
 library(foreign)
@@ -36,6 +48,19 @@ se <- se[,-c(14:16)]
 se_wyb <- se[,-c(9,15)]
 train <- se_wyb[ index, ]
 test <- se_wyb[ -index, ]
-chooseClassifier( class~., train, test )
+chooseClassifier( class~., train, test, rep(1,8) )
+
+
+chooseClassifier( class~., train, test, c(1,0,1,0,1,0,1,0) )
+
+lo <- read.table("http://www.ipipan.eu/~teisseyrep/TEACHING/DM/DANE/brach3-5klas.txt",
+header=TRUE)
+lo[, 7] <- ifelse(lo[, 7] \%in\% c(1,2),1,0 )
+index <- sample(1:nrow(lo), size=1/2*nrow(lo))
+train <- lo[index,]
+test <- lo[-index,]
+lo[, 7] <- as.integer(lo[, 7])
+
+chooseClassifier( LOC~., train, test, c(1,0,1,0,0,0,0,0) )
 }
 

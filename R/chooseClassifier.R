@@ -10,6 +10,7 @@
 #' the Area Under the Curve (result of \link[ROCR]{performance}) for
 #' classification algorithms like \link{naiveBayes}, \link{lda}, 
 #' logistic regression \link{glm} with \code{logit} or \code{probit} link function.
+#' Also there is shown precision for every classifier on a \code{ggplot}.
 #' Any classifier can be added if needed. Contact: 
 #' \href{https://github.com/sandersone/twd1/issues}{https://github.com/sandersone/twd1/issues}.
 #' 
