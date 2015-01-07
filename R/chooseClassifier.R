@@ -156,7 +156,10 @@ chooseClassifier <- function( formula, train, test, choice=c(1,1,1,0,0,0,0,0)){
 
    }
    auc_prec <- auc_prec[-1,]
-   plotClassifiers(data.frame(auc_prec))
+   x <- table(test[, as.character( formula )[2]])
+   that <- which(x == max(x))
+   
+   plotClassifiers(data.frame(auc_prec), line = x[that]/sum(x) )
 }
 
 
@@ -167,7 +170,7 @@ auc <- function(predicted_probability, real_classes){
 }
 
 
-plotClassifiers <- function( aucesX ){
+plotClassifiers <- function( aucesX, line ){
  # auc_prec -> aucesX
    names(aucesX) <- c("auc", "prec","algorithm")
    
@@ -185,7 +188,9 @@ plotClassifiers <- function( aucesX ){
           axis.title.y= element_text(family = "mono", size=15),
           panel.grid.major.x = element_blank(), 
           title =element_text(family = "mono", size = 18)#, legend.position = "top"
-          ) +ggtitle("Comparison of chosen \n classification algorithms")
+          ) +ggtitle("Comparison of chosen \n classification algorithms")+
+      geom_hline(yintercept=line)+
+      annotate("text", x = 0.6, y =line-0.02 , label = "proportion of the \n most numerous \n class", size=3)
    
 
 }
