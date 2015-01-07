@@ -33,5 +33,7 @@ se <- se[,-c(14:16)]
 se_wyb <- se[,-c(9,15)]
 train <- se_wyb[ index, ]
 test <- se_wyb[ -index, ]
-chooseClassifier( class~., train, test )
+chooseClassifier( class~., train, test, rep(1,8) )
 ```
+
+![Example 1](https://raw.githubusercontent.com/sandersone/twd1/master/Rplot.jpeg)

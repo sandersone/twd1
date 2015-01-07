@@ -36,7 +36,7 @@
 #' se_wyb <- se[,-c(9,15)]
 #' train <- se_wyb[ index, ] 
 #' test <- se_wyb[ -index, ]
-#' chooseClassifier( class~., train, test )
+#' chooseClassifier( class~., train, test, rep(1,8) )
 #' 
 #' @family classTools
 #' @rdname chooseClassifier
